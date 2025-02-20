@@ -1,0 +1,78 @@
+{
+	"data": {
+		"date": {
+			"created_at": "2025-02-17",
+			"updated_at": "2025-02-17"
+		},
+		"descriptions": {
+			"app_description": "Automatically fetches error logs from Sentry and reports to Telex for monitoring.",
+			"app_logo": "https://res.cloudinary.com/drkusmjom/image/upload/v1739997245/telex-sentry-integration-logo.webp",
+			"app_name": "Telex Sentry Integration",
+			"app_url": "https://sentry.io/",
+			"background_color": "#430098"
+		},
+		"integration_category": "Monitoring & Logging",
+		"integration_type": "interval",
+		"is_active": true,
+		"output": [
+			{
+				"label": "Telex Error Logs",
+				"value": true
+			}
+		],
+		"key_features": [
+			"Fetches real-time error logs from Sentry.",
+			"Automatically sends error reports to Telex.",
+			"Customizable alert settings based on severity.",
+			"Supports multiple notification channels."
+		],
+		"permissions": {
+			"monitoring_user": {
+				"always_online": true,
+				"display_name": "Sentry Log Monitor"
+			}
+		},
+		"settings": [
+			{
+				"label": "interval",
+				"type": "text",
+				"required": true,
+				"default": "*/5 * * * *"
+			},
+			{
+				"label": "Sentry API Key",
+				"type": "text",
+				"required": true,
+				"default": "your_sentry_api_key_here"
+			},
+			{
+				"label": "Organization Slug",
+				"type": "text",
+				"required": true,
+				"default": "your_sentry_org_slug"
+			},
+			{
+				"label": "Project Slug",
+				"type": "text",
+				"required": true,
+				"default": "your_sentry_project_slug"
+			},
+			{
+				"label": "Alert Sensitivity",
+				"type": "dropdown",
+				"required": true,
+				"default": "Medium",
+				"options": ["High", "Medium", "Low"]
+			},
+			{
+				"label": "Notify Admins",
+				"type": "multi-checkbox",
+				"required": true,
+				"default": "Super-Admin",
+				"options": ["Super-Admin", "Admin", "Developer"]
+			}
+		],
+		"tick_url": "https://telex-error-reporter.onrender.com/tick",
+		"target_url": "https://your-server.com/target"
+	}
+}
