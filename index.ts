@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import axios from "axios";
 import dotenv from "dotenv";
+import cron from "node-cron";
 import cors from "cors";
 
 
@@ -183,6 +184,11 @@ async function main () {
 
   await sendReportToTelex( errors );
 }
+
+cron.schedule( "*/5 * * * *", async () => {
+  console.log( "Running scheduled Sentry error log check..." );
+  await main(); // Calls the function that processes & sends logs
+} );
 
 // 🟢 Start the Express Server
 app.listen( PORT, () => {
