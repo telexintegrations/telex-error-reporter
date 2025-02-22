@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 3000;
 const SENTRY_API_KEY = process.env.SENTRY_API_KEY as string;
 const SENTRY_ORG = process.env.SENTRY_ORG as string;
 const SENTRY_PROJECT = process.env.SENTRY_PROJECT as string;
-const TELEX_WEBHOOK_URL = "https://ping.telex.im/v1/webhooks/0195188d-f355-7fa3-a9c5-079d4775e332"; // Replace with actual URL
+const TELEX_WEBHOOK_URL = "https://ping.telex.im/v1/webhooks/01952e71-a870-7bf7-93c2-b9e7ec3dd9b9"; // Replace with actual URL
 
 const SENTRY_URL = `https://sentry.io/api/0/projects/${ SENTRY_ORG }/${ SENTRY_PROJECT }/issues/`;
 
