@@ -77,7 +77,7 @@ app.get( "/integration", ( req: Request, res: Response ) => {
           "label": "interval",
           "type": "text",
           "required": true,
-          "default": "*/5 * * * *"
+          "default": "*/30 * * * *"
         },
         {
           "label": "Alert Sensitivity",
@@ -167,7 +167,7 @@ async function main () {
   await sendReportToTelex( errors );
 }
 
-cron.schedule( "*/5 * * * *", async () => {
+cron.schedule( "*/30 * * * *", async () => {
   console.log( "Running scheduled Sentry error log check..." );
   await main(); // Calls the function that processes & sends logs
 } );
