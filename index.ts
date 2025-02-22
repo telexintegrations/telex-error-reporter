@@ -48,7 +48,7 @@ app.get( "/integration", ( req: Request, res: Response ) => {
         "app_description": "Automatically fetches error logs from Sentry and reports to Telex for monitoring.",
         "app_logo": "https://res.cloudinary.com/drkusmjom/image/upload/v1739997245/telex-sentry-integration-logo.webp",
         "app_name": "Telex Sentry Integration",
-        "app_url": "https://sentry.io/",
+        "app_url": "https://telex-error-reporter.onrender.com/",
         "background_color": "#430098"
       },
       "integration_category": "Monitoring & Logging",
@@ -80,24 +80,6 @@ app.get( "/integration", ( req: Request, res: Response ) => {
           "default": "*/5 * * * *"
         },
         {
-          "label": "Sentry API Key",
-          "type": "text",
-          "required": true,
-          "default": "your_sentry_api_key_here"
-        },
-        {
-          "label": "Organization Slug",
-          "type": "text",
-          "required": true,
-          "default": "your_sentry_org_slug"
-        },
-        {
-          "label": "Project Slug",
-          "type": "text",
-          "required": true,
-          "default": "your_sentry_project_slug"
-        },
-        {
           "label": "Alert Sensitivity",
           "type": "dropdown",
           "required": true,
@@ -113,7 +95,7 @@ app.get( "/integration", ( req: Request, res: Response ) => {
         }
       ],
       "tick_url": "https://telex-error-reporter.onrender.com/tick",
-      "target_url": "https://your-server.com/target"
+      "target_url": "#"
     }
   }
   );
