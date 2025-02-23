@@ -131,18 +131,85 @@ async function fetchSentryErrors () {
   }
 }
 
-// 🔹 Process Errors
+// // 🔹 Process Errors
+// async function processSentryErrors () {
+//   const errors = await fetchSentryErrors();
+//   if ( !errors.length ) return [];
+
+//   return errors.map( ( error: { title: any; count: any; permalink: any; } ) => ( {
+//     event_name: "Sentry Error Log",
+//     username: "Sentry Bot",
+//     status: "error",
+//     message: `${ error.title } occurred ${ error.count } times. More details: ${ error.permalink }`,
+//   } ) );
+// }
+
 async function processSentryErrors () {
   const errors = await fetchSentryErrors();
   if ( !errors.length ) return [];
 
-  return errors.map( ( error: { title: any; count: any; permalink: any; } ) => ( {
-    event_name: "Sentry Error Log",
-    username: "Sentry Bot",
-    status: "error",
-    message: `${ error.title } occurred ${ error.count } times. More details: ${ error.permalink }`,
-  } ) );
+  let criticalErrors = 0;
+  let warnings = 0;
+  let lowSeverityIssues = 0;
+
+  let mostFrequentIssue = {
+    title: "",
+    count: 0,
+    type: "",
+    component: "",
+    impact: "",
+    permalink: "",
+  };
+
+  const processedErrors = errors.map( ( error: any ) => {
+    const severity = error.level || "unknown"; // Error level (e.g., fatal, error, warning)
+    const component = error.culprit || "Unknown Component"; // Affected part of the system
+    const errorType = error.metadata?.type || "General Error"; // Type of error
+    const impact = getImpactDescription( errorType ); // Impact analysis
+    const occurrenceCount = error.count;
+    const link = error.permalink;
+
+    // Count severity levels
+    if ( severity === "fatal" || severity === "error" ) criticalErrors++;
+    else if ( severity === "warning" ) warnings++;
+    else lowSeverityIssues++;
+
+    // Find the most frequent issue
+    if ( occurrenceCount > mostFrequentIssue.count ) {
+      mostFrequentIssue = {
+        title: error.title,
+        count: occurrenceCount,
+        type: errorType,
+        component: component,
+        impact: impact,
+        permalink: link,
+      };
+    }
+
+    return {
+      event_name: "Sentry Error Log",
+      username: "Sentry Bot",
+      status: severity,
+      message: ` *Sentry Error Report Summary*\n\n🚨 **Critical Errors:** ${ criticalErrors }\n⚠️ **Warnings:** ${ warnings }\nℹ️ **Low-Severity Issues:** ${ lowSeverityIssues }\n\n📌 **Most Frequent Issue:** "${ mostFrequentIssue.title }" (${ mostFrequentIssue.count } occurrences)\n- **Error Type:** ${ mostFrequentIssue.type }\n- **Affected Component:** ${ mostFrequentIssue.component }\n- **Impact:** ${ mostFrequentIssue.impact }\n\n🔗 **More Details:** [View Issue](${ mostFrequentIssue.permalink })`,
+    };
+  } );
+
+  return processedErrors;
 }
+
+// Function to determine impact based on error type
+function getImpactDescription ( errorType: string ) {
+  const impactMapping: { [ key: string ]: string; } = {
+    "TimeoutError": "Users experienced delays or failures when retrieving data.",
+    "ValidationError": "Some user inputs are failing validation.",
+    "DatabaseError": "Potential service disruptions due to database connection issues.",
+    "NetworkError": "Users might face connectivity problems.",
+    "AuthenticationError": "Login attempts may fail or be restricted.",
+  };
+
+  return impactMapping[ errorType ] || "General system instability detected.";
+}
+
 
 // 🔹 Send Report to Telex
 async function sendReportToTelex ( errors: any[] ) {
@@ -157,6 +224,28 @@ async function sendReportToTelex ( errors: any[] ) {
     }
   }
 }
+
+// async function sendReportToTelex ( errors: any[] ) {
+//   for ( const error of errors ) {
+//     try {
+//       const payload = {
+//         event_name: "Sentry Error Report", // Ensure event_name is included
+//         username: "Sentry Bot", // Ensure username is included
+//         status: "error", // Define the severity level
+//         message: error.message, // Use the formatted error message
+//       };
+//       const response = await axios.post( TELEX_WEBHOOK_URL, {
+//         text: error.message, // Use formatted message
+//       }, {
+//         headers: { "Content-Type": "application/json" },
+//       } );
+
+//       console.log( "✅ Report successfully sent to Telex:", response.data );
+//     } catch ( error: any ) {
+//       console.error( "❌ Failed to send report to Telex:", error.response?.data || error.message );
+//     }
+//   }
+// }
 
 // 🔹 Main Function to Run Everything
 async function main () {
